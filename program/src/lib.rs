@@ -48,7 +48,7 @@ struct CampaignDetails {
     pub name: String,
     pub description: String,
     pub image_link: String,
-    pub amount_donated: i64,
+    pub amount_donated: u64,
 }
 
 fn create_campaign(
@@ -59,14 +59,13 @@ fn create_campaign(
     let accounts_iter = &mut accounts.iter();
     let writing_account = next_account_info(accounts_iter)?;
     let creator_account = next_account_info(accounts_iter)?;
-
     if !creator_account.is_signer {
         msg!("creator_account should be signer");
         return Err(ProgramError::IncorrectProgramId);
     }
 
     if writing_account.owner != program_id {
-        msg!("Writter account isn't owned by program");
+        msg!("writing_account isn't owned by program");
         return Err(ProgramError::IncorrectProgramId);
     }
 
@@ -83,7 +82,7 @@ fn create_campaign(
         return Err(ProgramError::InsufficientFunds);
     }
     input_data.amount_donated = 0;
-    input_data.serialize(&mut &mut writing_account.data.borrow_mut()[..])?;
+    input_data.serialize(&mut &mut writing_account.try_borrow_mut_data()?[..])?;
     Ok(())
 }
 
@@ -102,7 +101,7 @@ fn withdraw(
     let admin_account = next_account_info(accounts_iter)?;
 
     if writing_account.owner != program_id {
-        msg!("Writter account isn't owned by program");
+        msg!("writing_account isn't owned by program");
         return Err(ProgramError::IncorrectProgramId);
     }
     if !admin_account.is_signer {
@@ -112,7 +111,7 @@ fn withdraw(
     let campaign_data = CampaignDetails::try_from_slice(*writing_account.data.borrow())
         .expect("Error deserialaizing data");
 
-    if campaign_data.admin == *admin_account.key {
+    if campaign_data.admin != *admin_account.key {
         msg!("Only the account admin can withdraw");
         return Err(ProgramError::InvalidAccountData);
     }
@@ -142,11 +141,11 @@ fn donate(
     let donator = next_account_info(accounts_iter)?;
 
     if writing_account.owner != program_id {
-        msg!("Writter account isn't owned by program");
+        msg!("writing_account isn't owned by program");
         return Err(ProgramError::IncorrectProgramId);
     }
     if donator_program_account.owner != program_id {
-        msg!("Writter account isn't owned by program");
+        msg!("donator_program_account isn't owned by program");
         return Err(ProgramError::IncorrectProgramId);
     }
     if !donator.is_signer {
@@ -157,12 +156,13 @@ fn donate(
     let mut campaign_data = CampaignDetails::try_from_slice(*writing_account.data.borrow())
         .expect("Error deserialaizing data");
 
-    campaign_data.amount_donated += **donator_program_account.lamports.borrow() as i64;
+    campaign_data.amount_donated += **donator_program_account.lamports.borrow();
 
-    **writing_account.try_borrow_mut_lamports()? -= **donator_program_account.lamports.borrow();
-    **donator_program_account.try_borrow_mut_lamports()? += 0;
+    **writing_account.try_borrow_mut_lamports()? += **donator_program_account.lamports.borrow();
+    **donator_program_account.try_borrow_mut_lamports()? = 0;
 
     campaign_data.serialize(&mut &mut writing_account.data.borrow_mut()[..])?;
 
     Ok(())
 }
+
