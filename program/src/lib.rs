@@ -65,7 +65,7 @@ fn create_campaign(
     }
 
     if writing_account.owner != program_id {
-        msg!("Writter account isn't owned by program");
+        msg!("writing_account isn't owned by program");
         return Err(ProgramError::IncorrectProgramId);
     }
 
@@ -101,7 +101,7 @@ fn withdraw(
     let admin_account = next_account_info(accounts_iter)?;
 
     if writing_account.owner != program_id {
-        msg!("Writter account isn't owned by program");
+        msg!("writing_account isn't owned by program");
         return Err(ProgramError::IncorrectProgramId);
     }
     if !admin_account.is_signer {
@@ -141,11 +141,11 @@ fn donate(
     let donator = next_account_info(accounts_iter)?;
 
     if writing_account.owner != program_id {
-        msg!("Writter account isn't owned by program");
+        msg!("writing_account isn't owned by program");
         return Err(ProgramError::IncorrectProgramId);
     }
     if donator_program_account.owner != program_id {
-        msg!("Writter account isn't owned by program");
+        msg!("donator_program_account isn't owned by program");
         return Err(ProgramError::IncorrectProgramId);
     }
     if !donator.is_signer {
