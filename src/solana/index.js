@@ -120,22 +120,6 @@ export async function createCampaign(
 }
 
 
-export function test() {
-    let camp = new CampaignDetails({
-        admin: PublicKey.default.toBuffer(),
-        name: 'Something',
-        description: 'Something',
-        image_link: 'Something',
-        amount_donated: 0
-    });
-    const buffer = serialize(CampaignDetails.schema, camp);
-    console.log(buffer);
-
-    const obj = deserialize(CampaignDetails.schema, CampaignDetails, Buffer.from([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9, 0, 0, 0, 83, 111, 109, 101, 116, 104, 105, 110, 103, 9, 0, 0, 0, 83, 111, 109, 101, 116, 104, 105, 110, 103, 9, 0, 0, 0, 83, 111, 109, 101, 116, 104, 105, 110, 103, 0, 0, 0, 0, 0, 0, 0, 0]))
-    console.log(obj);
-}
-
-
 export async function getAllCampaigns() {
     let accounts = await connection.getProgramAccounts(programId);
     let x = []
