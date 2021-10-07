@@ -1,28 +1,31 @@
+import { useState } from "react";
+import { createCampaign } from "../solana";
 const Form = () => {
+    const [name, setName] = useState('')
+    const [description, setDescription] = useState('')
+    const [image, setImageLink] = useState('')
 
-    const onSubmit = () => {
-        
+    const onSubmit = async (e) => {
+        e.preventDefault();
+        await createCampaign(name, description, image);
     }
 
     return (
-        <form class="ui form">
-            <div class="field">
+        <form className="ui form">
+            <div className="field">
                 <label>Title</label>
-                <input type="text" name="title" placeholder="Title" />
+                <input type="text" name="title" placeholder="Title" onChange={(e) => setName(e.target.value)}
+                />
             </div>
-            <div class="field">
+            <div className="field">
                 <label>Description</label>
-                <input type="text" name="description" placeholder="Description" />
+                <input type="text" name="description" placeholder="Description" onChange={(e) => setDescription(e.target.value)} />
             </div>
-            <div class="field">
-                <label>Description</label>
-                <input type="text" name="description" placeholder="Description" />
+            <div className="field">
+                <label>Image Link</label>
+                <input type="text" name="imageLink" placeholder="imageLink" onChange={(e) => setImageLink(e.target.value)} />
             </div>
-            <div class="field">
-                <label>Description</label>
-                <input type="text" name="description" placeholder="Description" />
-            </div>
-            <button class="ui button" type="submit">Submit</button>
+            <button className="ui button" type="submit" onClick={onSubmit} >Submit</button>
         </form>
     );
 }

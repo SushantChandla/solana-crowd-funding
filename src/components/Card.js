@@ -3,7 +3,7 @@ const Card = ({ data }) => {
     return (
         <div>
             <div className="ui card fluid">
-                <div class="image">
+                <div className="image">
                     <img src={data.image} />
                 </div>
                 <div className="content">
@@ -14,9 +14,8 @@ const Card = ({ data }) => {
                     </div>
                     <p>{data.description}</p>
 
-
-                    <form class="ui form container">
-                        <div class="ui grid">
+                    <form className="ui form container">
+                        <div className="ui grid">
                             <div className="row">
                                 <div className="column thirteen wide">
                                     <div className="field">
@@ -24,7 +23,7 @@ const Card = ({ data }) => {
                                     </div>
                                 </div>
                                 <div className="column">
-                                    <button class="ui button" type="submit">Donate</button>
+                                    <button className="ui button" type="submit">Donate</button>
                                 </div>
                             </div>
                         </div>

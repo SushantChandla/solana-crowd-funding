@@ -48,7 +48,7 @@ struct CampaignDetails {
     pub name: String,
     pub description: String,
     pub image_link: String,
-    pub amount_donated: i64,
+    pub amount_donated: u64,
 }
 
 fn create_campaign(
@@ -59,7 +59,6 @@ fn create_campaign(
     let accounts_iter = &mut accounts.iter();
     let writing_account = next_account_info(accounts_iter)?;
     let creator_account = next_account_info(accounts_iter)?;
-
     if !creator_account.is_signer {
         msg!("creator_account should be signer");
         return Err(ProgramError::IncorrectProgramId);
@@ -83,7 +82,7 @@ fn create_campaign(
         return Err(ProgramError::InsufficientFunds);
     }
     input_data.amount_donated = 0;
-    input_data.serialize(&mut &mut writing_account.data.borrow_mut()[..])?;
+    input_data.serialize(&mut &mut writing_account.try_borrow_mut_data()?[..])?;
     Ok(())
 }
 
@@ -157,7 +156,7 @@ fn donate(
     let mut campaign_data = CampaignDetails::try_from_slice(*writing_account.data.borrow())
         .expect("Error deserialaizing data");
 
-    campaign_data.amount_donated += **donator_program_account.lamports.borrow() as i64;
+    campaign_data.amount_donated += **donator_program_account.lamports.borrow();
 
     **writing_account.try_borrow_mut_lamports()? -= **donator_program_account.lamports.borrow();
     **donator_program_account.try_borrow_mut_lamports()? += 0;
@@ -165,4 +164,16 @@ fn donate(
     campaign_data.serialize(&mut &mut writing_account.data.borrow_mut()[..])?;
 
     Ok(())
+}
+
+#[test]
+fn test() {
+    let ob = CampaignDetails {
+        admin: Pubkey::default(),
+        amount_donated: 0,
+        description: String::from("Something"),
+        image_link: String::from("Something"),
+        name: String::from("Something"),
+    };
+    println!("{:?}", ob.try_to_vec());
 }
