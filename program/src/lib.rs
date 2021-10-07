@@ -111,7 +111,7 @@ fn withdraw(
     let campaign_data = CampaignDetails::try_from_slice(*writing_account.data.borrow())
         .expect("Error deserialaizing data");
 
-    if campaign_data.admin == *admin_account.key {
+    if campaign_data.admin != *admin_account.key {
         msg!("Only the account admin can withdraw");
         return Err(ProgramError::InvalidAccountData);
     }
@@ -158,22 +158,11 @@ fn donate(
 
     campaign_data.amount_donated += **donator_program_account.lamports.borrow();
 
-    **writing_account.try_borrow_mut_lamports()? -= **donator_program_account.lamports.borrow();
-    **donator_program_account.try_borrow_mut_lamports()? += 0;
+    **writing_account.try_borrow_mut_lamports()? += **donator_program_account.lamports.borrow();
+    **donator_program_account.try_borrow_mut_lamports()? = 0;
 
     campaign_data.serialize(&mut &mut writing_account.data.borrow_mut()[..])?;
 
     Ok(())
 }
 
-#[test]
-fn test() {
-    let ob = CampaignDetails {
-        admin: Pubkey::default(),
-        amount_donated: 0,
-        description: String::from("Something"),
-        image_link: String::from("Something"),
-        name: String::from("Something"),
-    };
-    println!("{:?}", ob.try_to_vec());
-}

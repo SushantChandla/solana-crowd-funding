@@ -12,7 +12,7 @@ const cluster = "https://api.devnet.solana.com";
 const connection = new Connection(cluster, "confirmed");
 const wallet = new Wallet("https://www.sollet.io", cluster);
 const programId = new PublicKey(
-    "EwSo27GsF83RnykJDtBx9YFbweQF5Ci4yq5kKxRvSzUf"
+    "286rapsUbvDe1ZgBeNhp37YHvEPwWPTr4Bkce4oMpUKT"
 );
 
 
@@ -138,11 +138,11 @@ export function test() {
 
 export async function getAllCampaigns() {
     let accounts = await connection.getProgramAccounts(programId);
-    let campaigns = []
+    let x = []
     accounts.forEach((e) => {
         try {
             let campData = deserialize(CampaignDetails.schema, CampaignDetails, e.account.data);
-            campaigns.push({
+            x.push({
                 pubId: e.pubkey,
                 name: campData.name,
                 description: campData.description,
@@ -154,7 +154,7 @@ export async function getAllCampaigns() {
             console.log(err);
         }
     });
-    return campaigns;
+    return x;
 }
 
 

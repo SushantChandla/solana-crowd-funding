@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { createCampaign } from "../solana";
-const Form = () => {
+const Form = ({setRoute}) => {
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [image, setImageLink] = useState('')
@@ -8,6 +8,7 @@ const Form = () => {
     const onSubmit = async (e) => {
         e.preventDefault();
         await createCampaign(name, description, image);
+        setRoute(0);
     }
 
     return (

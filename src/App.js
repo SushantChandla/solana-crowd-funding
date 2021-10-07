@@ -10,10 +10,9 @@ const App = () => {
   useEffect(() => {
     getAllCampaigns().then((val) => {
       setCards(val);
+      console.log(val);
     });
   }, []);
-
-
   return (
     <div className="ui container">
       <Header setRoute={setRoute} />
@@ -28,12 +27,18 @@ const App = () => {
                 amount: (e.amount_donated).toString(),
                 image: e.image_link,
                 id: e.pubId,
-              }} />
+              }}
+              setCards={setCards} />
           ))
         }
         </div>
         :
-        <Form />
+        <Form setRoute={(e) => {
+          setRoute(e);
+          getAllCampaigns().then((val) => {
+            setCards(val);
+          });
+        }} />
       }
     </div>
   );
