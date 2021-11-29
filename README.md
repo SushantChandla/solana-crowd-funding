@@ -1,6 +1,5 @@
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Crowdfunding with Solana
+[Tutorial](https://learn.figment.io/tutorials/crowdfunding-with-solana)
 
 ## Available Scripts
 
